@@ -5,6 +5,8 @@ const fs = require("fs");
 const simpleGit = require("simple-git");
 const path = require("path");
 
+const git = simpleGit();
+
 const srcDir = process.cwd();
 const destDir = path.join(__dirname, "temp");
 
@@ -17,7 +19,7 @@ async function main() {
   copyVersionContent();
   await gitPush();
   getURL();
-  removeFolder()
+  removeFolder();
 
   // deleteFolder();
 }
@@ -42,10 +44,9 @@ function copyFolder() {
 }
 
 async function switchToGhPages() {
-  const git = simpleGit();
   await git.cwd(destDir);
   await git.checkout("gh-pages");
-  await git.clean("fdx")
+  await git.clean("fdx");
 }
 
 function createFolder() {
@@ -69,13 +70,16 @@ function copyVersionContent() {
   }
 }
 
-async function gitPush() {}
+async function gitPush() {
+  await git.add('./*')
+  await git.commit("updates");
+  await git.push("origin", "gh-pages");
+}
 
 function getURL() {
-  
-}
-
-
-function removeFolder(){
+  console.log('published')
 
 }
+
+
+function removeFolder() {}
