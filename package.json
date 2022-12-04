@@ -1,0 +1,21 @@
+{
+  "name": "gh-pages-versioned",
+  "version": "1.0.0",
+  "description": "handy tool to publish multiple versions of a repo on github pages",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "bin": "node ./index.js",
+  "keywords": [
+    "github-pages",
+    "gh-pages",
+    "gh-pages-tagged",
+    "gh-pages-versioned"
+  ],
+  "author": "Prince Thind",
+  "license": "ISC",
+  "dependencies": {
+    "fs-extra": "^11.1.0"
+  }
+}
