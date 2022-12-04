@@ -4,7 +4,8 @@
   "description": "handy tool to publish multiple versions of a repo on github pages",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "clean": "rm -rf temp"
   },
   "bin": "./index.js",
   "keywords": [
@@ -16,6 +17,7 @@
   "author": "Prince Thind",
   "license": "ISC",
   "dependencies": {
-    "fs-extra": "^11.1.0"
+    "fs-extra": "^11.1.0",
+    "simple-git": "^3.15.1"
   }
 }
