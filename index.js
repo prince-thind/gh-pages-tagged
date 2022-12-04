@@ -1,86 +1,47 @@
 #!/usr/bin/env node
 
-const fse = require("fs-extra");
-const fs = require("fs");
-const simpleGit = require("simple-git");
 const path = require("path");
 
-const git = simpleGit();
+const argv = require("minimist")(process.argv.slice(2));
 
-const srcDir = process.cwd();
-const destDir = path.join(__dirname, "temp");
+const { makeRepoCopy, createVersionFolder, initializeFse, copyPublishDirContents, performCleanup } = require("./lib/fse");
+const { switchToGhPages, initializeGit, gitPush, printUrl } = require("./lib/git");
 
-const versionName = process.argv[2];
+const srcDir = process.cwd(); //repo path where it the cli is used
+const destDir = path.join(__dirname, "temp"); // copy of the repo we want to work with (inside this repo)
+
+const versionName = argv.version;
+const publishDir = argv.dir;
 
 main();
 
 async function main() {
-  copyFolder();
+  const valid = validateArguements();
+  if (!valid) return;
+
+  initializeFse(srcDir,destDir,versionName,publishDir);
+  
+  await makeRepoCopy();
+  await initializeGit(destDir,versionName);
   await switchToGhPages();
-  createFolder();
-  copyVersionContent();
+
+  await createVersionFolder()
+  await copyPublishDirContents();
+
   await gitPush();
-  await getURL();
-  removeFolder();
 
+  await printUrl();
+  performCleanup();
 }
 
-
-
-function copyFolder() {
-  try {
-    fse.copySync(srcDir, destDir, { overwrite: true });
-    console.log("success!");
-  } catch (err) {
-    console.error(err);
-  }
-}
-
-async function switchToGhPages() {
-  await git.cwd(destDir);
-  await git.checkout("gh-pages");
-  await git.clean("fdx");
-}
-
-function createFolder() {
-  const versionName = process.argv[2];
-  fs.mkdirSync(path.join(destDir, versionName));
-}
-
-function copyVersionContent() {
-  const versionName = process.argv[2];
-  const folderName = process.argv[3];
-
-  try {
-    fse.copySync(
-      path.join(srcDir, folderName),
-      path.join(destDir, versionName),
-      { overwrite: false }
+function validateArguements() {
+  if (!versionName || !publishDir) {
+    console.error(
+      "version name or dir name unspecified, please pass arguments as defined in the readme"
     );
-    console.log("success!");
-  } catch (err) {
-    console.error(err);
+    return false;
   }
+
+  return true;
 }
 
-async function gitPush() {
-  await git.add("./*");
-  await git.commit("updates");
-  await git.push("origin", "gh-pages", { "--force": true });
-}
-
-async function getURL() {
-  const remoteURL = (await git.getConfig("remote.origin.url")).value;
-  const regex = /git@github.com:(.*)\/(.*).git/;
-  const result = regex.exec(remoteURL);
-
-  const username = result[1];
-  const repoName = result[2];
-  console.log(
-    `Published at: https://${username}.github.io/${repoName}/${versionName}`
-  );
-}
-
-function removeFolder() {
-  fse.removeSync(destDir)
-}
