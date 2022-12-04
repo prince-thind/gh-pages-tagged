@@ -1,26 +1,18 @@
 #!/usr/bin/env node
 
 const fse = require("fs-extra");
-const path=require('path')
+const path = require("path");
 
 const srcDir = process.cwd();
-const destDir = path.join(__dirname,"temp");
-
-
+const destDir = path.join(__dirname, "temp");
 
 
 main();
 
 function main() {
-    // return;
-  try {
-    fse.copySync(srcDir, destDir, { overwrite: true });
-    console.log("success!");
-  } catch (err) {
-    console.error(err);
-  }
+  copyFolder();
+    
 }
-
 
 //todo
 /*
@@ -31,3 +23,15 @@ function main() {
  git push -f-->
  provide url to user
 */
+
+
+function copyFolder() {
+
+
+  try {
+    fse.copySync(srcDir, destDir, { overwrite: true });
+    console.log("success!");
+  } catch (err) {
+    console.error(err);
+  }
+}

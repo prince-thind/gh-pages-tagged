@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js"
   },
-  "bin": "node ./index.js",
+  "bin": "./index.js",
   "keywords": [
     "github-pages",
     "gh-pages",
