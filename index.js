@@ -19,6 +19,8 @@ async function main() {
   const valid = validateArguements();
   if (!valid) return;
 
+  console.log('working on it...')
+
   initializeFse(srcDir,destDir,versionName,publishDir);
   
   await makeRepoCopy();
