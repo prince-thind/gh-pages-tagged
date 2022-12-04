@@ -10,6 +10,8 @@ const git = simpleGit();
 const srcDir = process.cwd();
 const destDir = path.join(__dirname, "temp");
 
+const versionName = process.argv[2];
+
 main();
 
 async function main() {
@@ -18,21 +20,12 @@ async function main() {
   createFolder();
   copyVersionContent();
   await gitPush();
-  getURL();
+  await getURL();
   removeFolder();
 
-  // deleteFolder();
 }
 
-//todo
-/*
-//make a temp copy--->
- //switch to gh-apges on copy--> 
- //create  a folder based on input--> 
- copy contents into this folder--> 
- git push -f-->
- provide url to user
-*/
+
 
 function copyFolder() {
   try {
@@ -71,15 +64,23 @@ function copyVersionContent() {
 }
 
 async function gitPush() {
-  await git.add('./*')
+  await git.add("./*");
   await git.commit("updates");
-  await git.push("origin", "gh-pages");
+  await git.push("origin", "gh-pages", { "--force": true });
 }
 
-function getURL() {
-  console.log('published')
+async function getURL() {
+  const remoteURL = (await git.getConfig("remote.origin.url")).value;
+  const regex = /git@github.com:(.*)\/(.*).git/;
+  const result = regex.exec(remoteURL);
 
+  const username = result[1];
+  const repoName = result[2];
+  console.log(
+    `Published at: https://${username}.github.io/${repoName}/${versionName}`
+  );
 }
 
-
-function removeFolder() {}
+function removeFolder() {
+  fse.removeSync(destDir)
+}
