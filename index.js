@@ -4,13 +4,13 @@ const path = require("path");
 
 const argv = require("minimist")(process.argv.slice(2));
 
-const { makeRepoCopy, createVersionFolder, initializeFse, copyPublishDirContents, performCleanup } = require("./lib/fse");
-const { switchToGhPages, initializeGit, gitPush, printUrl } = require("./lib/git");
+const { makeRepoCopy, createVersionFolder, initializeFse, copyPublishDirContents, performCleanup, cleanupGhPages } = require("./lib/fse");
+const { switchToGhPages, initializeGit, gitPush, printUrl,fetchGhPagesBranchLocally } = require("./lib/git");
 
 const srcDir = process.cwd(); //repo path where it the cli is used
 const destDir = path.join(__dirname, "temp"); // copy of the repo we want to work with (inside this repo)
 
-const versionName = argv.version;
+const versionName = argv.version??'latest';
 const publishDir = argv.dir;
 
 main();
@@ -27,19 +27,23 @@ async function main() {
   await initializeGit(destDir,versionName);
   await switchToGhPages();
 
+  await cleanupGhPages();
+
   await createVersionFolder()
   await copyPublishDirContents();
+  // await linkGhPagesToLatest();
 
   await gitPush();
 
   await printUrl();
-  performCleanup();
+  await performCleanup();
+  await fetchGhPagesBranchLocally()
 }
 
 function validateArguements() {
-  if (!versionName || !publishDir) {
+  if (!publishDir) {
     console.error(
-      "version name or dir name unspecified, please pass arguments as defined in the readme"
+      "dir name unspecified, please pass a name as --dir=name"
     );
     return false;
   }
