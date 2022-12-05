@@ -1,6 +1,6 @@
 {
   "name": "gh-pages-tagged",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "handy tool to publish multiple versions of a repo on github pages",
   "main": "index.js",
   "scripts": {
