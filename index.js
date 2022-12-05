@@ -5,7 +5,8 @@ const path = require("path");
 const argv = require("minimist")(process.argv.slice(2));
 
 const { makeRepoCopy, createVersionFolder, initializeFse, copyPublishDirContents, performCleanup, cleanupGhPages } = require("./lib/fse");
-const { switchToGhPages, initializeGit, gitPush, printUrl,fetchGhPagesBranchLocally } = require("./lib/git");
+const { switchToGhPages, initializeGit, gitPush, printUrl } = require("./lib/git");
+const { fetchGhpagesToOriginalRepo, linkGhPagesToLatest } = require("./lib/misc");
 
 const srcDir = process.cwd(); //repo path where it the cli is used
 const destDir = path.join(__dirname, "temp"); // copy of the repo we want to work with (inside this repo)
@@ -31,13 +32,14 @@ async function main() {
 
   await createVersionFolder()
   await copyPublishDirContents();
-  // await linkGhPagesToLatest();
+  await linkGhPagesToLatest(destDir)
 
   await gitPush();
 
   await printUrl();
+
   await performCleanup();
-  await fetchGhPagesBranchLocally()
+  await fetchGhpagesToOriginalRepo(srcDir)
 }
 
 function validateArguements() {
