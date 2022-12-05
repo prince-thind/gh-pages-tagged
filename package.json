@@ -7,7 +7,9 @@
     "start": "node index.js",
     "clean": "rm -rf temp"
   },
-  "bin": "./index.js",
+  "bin": {
+    "gh-pages-tagged": "index.js"
+  },
   "keywords": [
     "github-pages",
     "gh-pages",
@@ -23,5 +25,16 @@
   },
   "devDependencies": {
     "eslint": "^8.29.0"
-  }
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prince-thind/gh-pages-tagged.git"
+  },
+  "bugs": {
+    "url": "https://github.com/prince-thind/gh-pages-tagged/issues"
+  },
+  "homepage": "https://github.com/prince-thind/gh-pages-tagged#readme"
 }
