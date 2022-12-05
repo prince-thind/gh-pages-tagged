@@ -10,7 +10,7 @@ const { switchToGhPages, initializeGit, gitPush, printUrl } = require("./lib/git
 const { fetchGhpagesToOriginalRepo, linkGhPagesToLatest } = require("./lib/misc");
 
 const srcDir = process.cwd(); //repo path where it the cli is used
-const destDir = path.join(os.tmpdir(), "github_pages_temp"); // copy of the repo we want to work with (inside temp folder)
+const destDir = path.join(os.tmpdir(), "github_pages_temp"+Date.now()); // copy of the repo we want to work with (inside temp folder)
 
 const versionName = argv.version??'latest';
 const publishDir = argv.dir;
